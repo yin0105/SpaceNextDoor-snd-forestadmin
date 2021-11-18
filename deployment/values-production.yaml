@@ -1,0 +1,83 @@
+nodejs:
+  replicaCount: 1
+  nameOverride: prod-snd-forestadmin
+  image:
+    repository: 414928843086.dkr.ecr.ap-southeast-1.amazonaws.com/snd-forestadmin
+    pullPolicy: Always
+  containerPorts:
+    - 3000
+  env:
+    - name: NODE_ENV
+      value: production
+    - name: APPLICATION_PORT
+      value: "3000"
+    - name: DATABASE_URL
+      valueFrom:
+        secretKeyRef:
+          key: DATABASE_URL
+          name: forestadmin
+    - name: APPLICATION_URL
+      valueFrom:
+        secretKeyRef:
+          key: APPLICATION_URL
+          name: forestadmin
+    - name: DATABASE_SCHEMA
+      valueFrom:
+        secretKeyRef:
+          key: DATABASE_SCHEMA
+          name: forestadmin
+    - name: DATABASE_SSL
+      valueFrom:
+        secretKeyRef:
+          key: DATABASE_SSL
+          name: forestadmin
+    - name: FOREST_AUTH_SECRET
+      valueFrom:
+        secretKeyRef:
+          key: FOREST_AUTH_SECRET
+          name: forestadmin
+    - name: FOREST_ENV_SECRET
+      valueFrom:
+        secretKeyRef:
+          key: FOREST_ENV_SECRET
+          name: forestadmin
+    - name: ADMIN_API_TOKEN
+      valueFrom:
+        secretKeyRef:
+          key: ADMIN_API_TOKEN
+          name: forestadmin
+    - name: RABBITMQ_URL
+      valueFrom:
+        secretKeyRef:
+          name: site-stock-service
+          key: RABBITMQ_URL
+    - name: SND_EXCHANGE
+      valueFrom:
+        secretKeyRef:
+          name: site-stock-service
+          key: SND_EXCHANGE
+    - name: SND_UPDATE_ES_KEY
+      valueFrom:
+        secretKeyRef:
+          name: site-stock-service
+          key: SND_UPDATE_ES_KEY
+    - name: SND_UPDATE_STOCK_KEY
+      valueFrom:
+        secretKeyRef:
+          name: site-stock-service
+          key: SND_UPDATE_STOCK_KEY
+  workingDir: /var/source
+  resources:
+    limits:
+      cpu: 600m
+      memory: 400Mi
+    requests:
+      cpu: 200m
+      memory: 300Mi
+  type: ClusterIP
+  default:
+    ports:
+      - name: prod-snd-forestadmin-http
+        externalPort: 80
+        internalPort: 3000
+        protocol: TCP
